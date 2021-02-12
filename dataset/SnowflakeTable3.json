@@ -1,0 +1,17 @@
+{
+	"name": "SnowflakeTable3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Snowflake_LS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "PUBLIC",
+			"table": "NW_SALES"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,35 @@
+{
+	"name": "dataflow_alterrow",
+	"properties": {
+		"folder": {
+			"name": "Training"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable4",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tOrderID as integer,\n\t\tCustomerID as string,\n\t\tEmployeeID as integer,\n\t\tOrderDate as timestamp,\n\t\tOrderAmt as decimal(10,2)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nsource1 alterRow(upsertIf(true()),\n\tdeleteIf(isNull(OrderID))) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tOrderID as decimal(38,0),\n\t\tCustomerID as string,\n\t\tEmployeeID as decimal(38,0),\n\t\tOrderDate as timestamp,\n\t\tOrderAmt as decimal(10,2)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:true,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['OrderID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tOrderID,\n\t\tCustomerID,\n\t\tEmployeeID,\n\t\tOrderDate,\n\t\tOrderAmt\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstageInsert: true) ~> sink1"
+		}
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"name": "AzureSqlTable6",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Empid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Empname",
+				"type": "varchar"
+			},
+			{
+				"name": "Dept",
+				"type": "varchar"
+			},
+			{
+				"name": "Active",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StartDate",
+				"type": "date"
+			},
+			{
+				"name": "EndDate",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EmpT2"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,67 @@
+{
+	"name": "SCDTYPE2",
+	"properties": {
+		"folder": {
+			"name": "Training"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable11",
+						"type": "DatasetReference"
+					},
+					"name": "EMPSOURCE"
+				},
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable17",
+						"type": "DatasetReference"
+					},
+					"name": "EMPTAR"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable18",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable19",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "HashSource"
+				},
+				{
+					"name": "HashTar"
+				},
+				{
+					"name": "Exists1"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Exists2"
+				},
+				{
+					"name": "DerivedColumn2"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tEmpid as integer,\n\t\tEmpname as string,\n\t\tDept as string,\n\t\tSTARTDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> EMPSOURCE\nsource(output(\n\t\tSID as decimal(38,0),\n\t\tEMPID as decimal(38,0),\n\t\tEMPNAME as string,\n\t\tDEPT as string,\n\t\tACTIVE as decimal(38,0),\n\t\tSTARTDATE as date,\n\t\tENDDATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'table') ~> EMPTAR\nEMPSOURCE derive(SOURCEHASH = md5(Empname,Dept)) ~> HashSource\nEMPTAR derive(TragetHash = md5(EMPNAME,DEPT)) ~> HashTar\nHashSource, HashTar exists(SOURCEHASH == TragetHash,\n\tnegate:true,\n\tbroadcast: 'auto')~> Exists1\nExists1 derive(ACTIVE = 1,\n\t\tENDDATE = toDate('9999-12-31')) ~> DerivedColumn1\nHashTar, DerivedColumn1 exists(EMPTAR@EMPID == EMPSOURCE@Empid\n\t&& EMPTAR@EMPNAME == EMPSOURCE@Empname,\n\tnegate:false,\n\tbroadcast: 'auto')~> Exists2\nExists2 derive(ACTIVE = 0,\n\t\tENDDATE = toDate(currentUTC())) ~> DerivedColumn2\nDerivedColumn2 alterRow(updateIf(true())) ~> AlterRow1\nDerivedColumn1 sink(input(\n\t\tSID as decimal(38,0),\n\t\tEMPID as decimal(38,0),\n\t\tEMPNAME as string,\n\t\tDEPT as string,\n\t\tACTIVE as decimal(38,0),\n\t\tSTARTDATE as date,\n\t\tENDDATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tEMPID = Empid,\n\t\tEMPNAME = Empname,\n\t\tDEPT = Dept,\n\t\tACTIVE,\n\t\tSTARTDATE = STARTDate,\n\t\tENDDATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstageInsert: true) ~> sink1\nAlterRow1 sink(input(\n\t\tSID as decimal(38,0),\n\t\tEMPID as decimal(38,0),\n\t\tEMPNAME as string,\n\t\tDEPT as string,\n\t\tACTIVE as decimal(38,0),\n\t\tSTARTDATE as date,\n\t\tENDDATE as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['SID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tSID,\n\t\tEMPID,\n\t\tEMPNAME,\n\t\tDEPT,\n\t\tACTIVE,\n\t\tSTARTDATE,\n\t\tENDDATE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstageInsert: true) ~> sink2"
+		}
+	}
+}

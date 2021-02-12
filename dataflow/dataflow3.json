@@ -1,0 +1,67 @@
+{
+	"name": "dataflow3",
+	"properties": {
+		"folder": {
+			"name": "Training"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable5",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable6",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "DerivedColumn2"
+				},
+				{
+					"name": "Exists1"
+				},
+				{
+					"name": "DerivedColumn3"
+				},
+				{
+					"name": "Exists2"
+				},
+				{
+					"name": "DerivedColumn4"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tEmpid as short,\n\t\tEmpname as string,\n\t\tDept as string,\n\t\tSTARTDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tEmpid as integer,\n\t\tEmpname as string,\n\t\tDept as string,\n\t\tActive as integer,\n\t\tStartDate as date,\n\t\tEndDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source2\nsource1 derive(inputhash = md5(Empname,Dept)) ~> DerivedColumn1\nsource2 derive(sqlthash = md5(Empname,Dept)) ~> DerivedColumn2\nDerivedColumn1, DerivedColumn2 exists(inputhash == sqlthash,\n\tnegate:true,\n\tbroadcast: 'auto')~> Exists1\nExists1 derive(Active = 1,\n\t\tEndDate = toDate('9999-12-31')) ~> DerivedColumn3\nDerivedColumn2, DerivedColumn3 exists(source2@Empid == source1@Empid\n\t&& source2@Empname == source1@Empname,\n\tnegate:false,\n\tbroadcast: 'auto')~> Exists2\nExists2 derive(Active = 0,\n\t\tEndDate = toDate(currentUTC())) ~> DerivedColumn4\nDerivedColumn4 alterRow(updateIf(true())) ~> AlterRow1\nDerivedColumn3 sink(input(\n\t\tEmpid as integer,\n\t\tEmpname as string,\n\t\tDept as string,\n\t\tActive as integer,\n\t\tStartDate as date,\n\t\tEndDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tEmpid,\n\t\tEmpname,\n\t\tDept,\n\t\tActive,\n\t\tStartDate = STARTDate,\n\t\tEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nAlterRow1 sink(input(\n\t\tEmpid as integer,\n\t\tEmpname as string,\n\t\tDept as string,\n\t\tActive as integer,\n\t\tStartDate as date,\n\t\tEndDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['Empid','Empname','Dept'],\n\tformat: 'table',\n\tmapColumn(\n\t\tEmpid,\n\t\tEmpname,\n\t\tDept,\n\t\tActive,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink2"
+		}
+	}
+}

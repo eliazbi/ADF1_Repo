@@ -1,0 +1,17 @@
+{
+	"name": "SnowflakeTable24",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Snowflake_LS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "PUBLIC",
+			"table": "ProductDim"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

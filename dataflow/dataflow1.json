@@ -1,0 +1,31 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"folder": {
+			"name": "Training"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable3",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"script": "source(output(\n\t\tSalesOrderID as string,\n\t\tRevisionNumber as string,\n\t\tOrderDate as string,\n\t\tDueDate as string,\n\t\tShipDate as string,\n\t\tStatus as string,\n\t\tOnlineOrderFlag as string,\n\t\tSalesOrderNumber as string,\n\t\tPurchaseOrderNumber as string,\n\t\tAccountNumber as string,\n\t\tCustomerID as string,\n\t\tSalesPersonID as string,\n\t\tTerritoryID as string,\n\t\tBillToAddressID as string,\n\t\tShipToAddressID as string,\n\t\tShipMethodID as string,\n\t\tCreditCardID as string,\n\t\tCreditCardApprovalCode as string,\n\t\tCurrencyRateID as string,\n\t\tSubTotal as string,\n\t\tTaxAmt as string,\n\t\tFreight as string,\n\t\tTotalDue as string,\n\t\tComment as string,\n\t\trowguid as string,\n\t\tModifiedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstageInsert: true) ~> sink1"
+		}
+	}
+}
