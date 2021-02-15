@@ -82,7 +82,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"variableName": "uflag",
-											"value": true
+											"value": "true"
 										}
 									}
 								]
@@ -160,7 +160,7 @@
 		],
 		"variables": {
 			"uflag": {
-				"type": "Boolean",
+				"type": "String",
 				"defaultValue": "False"
 			}
 		},
