@@ -82,7 +82,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"variableName": "uflag",
-											"value": "true"
+											"value": "True"
 										}
 									}
 								]
