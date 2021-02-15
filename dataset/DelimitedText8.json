@@ -1,0 +1,27 @@
+{
+	"name": "DelimitedText8",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_SAS_URI",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "cn2"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Average_Covered_Charges|Average_Total_Payments|Total_Discharges_|Bachelor's_or_Higher|HS_Grad_or|Payments__|Reimbursement__|Covered_Charges_|Region_Provider_Name|ReimbursementPercentage__|Definition__|Region__|INCOME_PER_CAPITA__|EARNINGS_-_BACHELORS|EARNINGS_-_GRADUATE|EARNINGS_-_HS|EARNINGS-_LESS_THAN|MEDIAN_FAMILY_INCOME__|of_Records_|POP_25_OVER__|City__|Id__|Name__|State__|Street_Address_|Zip_Code_",
+				"type": "String"
+			}
+		]
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"name": "DelimitedText9",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_SAS_URI",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "cn3"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
