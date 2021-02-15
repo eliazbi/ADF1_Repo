@@ -4733,7 +4733,12 @@
 													{
 														"referenceName": "DelimitedText10",
 														"type": "DatasetReference",
-														"parameters": {}
+														"parameters": {
+															"filename": {
+																"value": "@concat(item(),'.txt')",
+																"type": "Expression"
+															}
+														}
 													}
 												]
 											}
@@ -4810,11 +4815,20 @@
 					"referenceName": "AzureBlobStorage_SAS_URI",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
 						"container": "cn3"
 					},
 					"columnDelimiter": ",",
