@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@variables('uflag')",
+						"value": "@bool(variables('uflag'))",
 						"type": "Expression"
 					},
 					"activities": [
