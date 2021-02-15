@@ -111,7 +111,13 @@
 										"outputs": [
 											{
 												"referenceName": "DelimitedText10",
-												"type": "DatasetReference"
+												"type": "DatasetReference",
+												"parameters": {
+													"filename": {
+														"value": "@concat(item(),'.txt')",
+														"type": "Expression"
+													}
+												}
 											}
 										]
 									}
