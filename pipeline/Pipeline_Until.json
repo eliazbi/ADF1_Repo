@@ -44,7 +44,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzureSqlSource",
-									"sqlReaderQuery": "select status from  [dbo].[status]  where ID = 1",
+									"sqlReaderQuery": {
+										"value": "select status as ZST from  [dbo].[status]  where ID = 1",
+										"type": "Expression"
+									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -68,7 +71,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@equals(activity('Lookup1').output.firstRow.status,'Y')",
+									"value": "@equals(activity('Lookup1').output.firstRow.ZST,'Y')",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
@@ -79,7 +82,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"variableName": "uflag",
-											"value": "True"
+											"value": true
 										}
 									}
 								]
@@ -92,8 +95,8 @@
 		],
 		"variables": {
 			"uflag": {
-				"type": "String",
-				"defaultValue": "Flag"
+				"type": "Boolean",
+				"defaultValue": "False"
 			}
 		},
 		"annotations": []
