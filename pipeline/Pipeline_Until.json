@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Until1",
+				"name": "UntilStatus",
 				"type": "Until",
 				"dependsOn": [],
 				"userProperties": [],
@@ -97,7 +97,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Until1",
+						"activity": "UntilStatus",
 						"dependencyConditions": [
 							"Succeeded"
 						]
