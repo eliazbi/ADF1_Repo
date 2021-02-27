@@ -15,9 +15,23 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "PowerQuery1",
+						"type": "DataFlowReference"
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
+					},
+					"sinks": {
+						"UserQuery": {
+							"name": "SinkDelimitedText14",
+							"dataset": {
+								"referenceName": "DelimitedText14",
+								"type": "DatasetReference"
+							},
+							"script": "sink(input(\n\t\tEmpid as string,\n\t\tEmpname as string,\n\t\tDept as string,\n\t\tSTARTDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['SaleorderPQ.txt'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> SinkDelimitedText14"
+						}
 					},
 					"integrationRuntime": {
 						"referenceName": "AutoResolveIntegrationRuntime",
