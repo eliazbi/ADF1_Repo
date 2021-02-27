@@ -1,0 +1,20 @@
+{
+	"name": "PowerQuery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "DelimitedText13",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~>  DelimitedText13",
+					"dataset": {
+						"referenceName": "DelimitedText13",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"sinks": [],
+			"script": "section Section1;\r\nshared DelimitedText13 = let\r\n  AdfDoc = AzureStorage.DataLakeContents(\"https://el108gen2.dfs.core.windows.net/cn1/Saleorder.txt\"),\r\n  Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]),\r\n  PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])\r\nin\r\n  PromotedHeaders;\r\nshared UserQuery = let\r\n  Source = DelimitedText13,\r\n  #\"Removed columns\" = Table.RemoveColumns(Source, {\"CreditCardApprovalCode\"}),\r\n  #\"Split column by delimiter\" = Table.SplitColumn(#\"Removed columns\", \"AccountNumber\", Splitter.SplitTextByEachDelimiter({\"-\"}, QuoteStyle.Csv), {\"AccountNumber.1\", \"AccountNumber.2\"}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Split column by delimiter\", {{\"OrderDate\", type datetime}}),\r\n  #\"Inserted month\" = Table.AddColumn(#\"Changed column type\", \"Month\", each Date.Month([OrderDate]), type number),\r\n  #\"Inserted year\" = Table.AddColumn(#\"Inserted month\", \"Year\", each Date.Year([OrderDate]), type number),\r\n  #\"Inserted uppercased text\" = Table.AddColumn(#\"Inserted year\", \"UPPERCASE\", each Text.Upper([OnlineOrderFlag]), type text)\r\nin\r\n  #\"Inserted uppercased text\";\r\n"
+		}
+	}
+}
